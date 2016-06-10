@@ -1,0 +1,11 @@
+= UPay: UPI API Wallet Technology Demonstrator
+
+UPay intends to demonstrate an implementation of http://www.npci.org.in/UPI_Documents.aspx[UPI]
+
+The canonical UPI API, specified by NPCI, uses XML over HTTPS. The API calls are asynchronous. The Request, Response are paired through a common transaction ID set by the originating point.
+
+Thus our Protocol Buffer UPI implementation will use Bidirectional http://www.grpc.io/docs/tutorials/basic/go.html#bidirectional-streaming-rpc[streaming RPC].
+
+NPCI implements this API by mapping the payloads into ISO8583 0200/210, payment request/response, messages and passing it through the existing the NPCI infrastructure.
+
+
