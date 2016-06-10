@@ -20,87 +20,102 @@
 * Author: Ashish Banerjee, tech@innomon.in
 */
 
-package in.innomon.je;
+package in.innomon.pay.txn;
 
-/**
- *
- * @author ashish
- * 22-May-11: Added BDB JE Replication extensions 
- */
-public class EnvInfo {
-    private String envHome = "/home/ashish/ubpay";
-    private String balanceStore = "CashBalance";
-    private String txnStore = "TxnStore";
-    private boolean createAccountOnTxn = false;  // create a new UUID if not present
+import com.sleepycat.persist.model.Persistent;
+import java.io.Serializable;
 
-    // replication support
-    private String groupName = "upayReplicationGroup";
-    private String nodeName  = "Master";
-    private String nodeHostPort = "localhost:4101";
-    private String helperHosts = "localhost:4101";
+@Persistent
+public class TxnHdr implements Serializable {
+    private String initiaorIP;
+    private String initiatorDeviceType;
+
+    public static enum WireSecurity {
+        NONE,
+        SSL,
+        TLS;
+    }
+
+    public static enum MsgSecurity {
+        NONE,
+        PKI;
+    }
     
-    public String getTxnStore() {
-        return txnStore;
+    public static enum TxnType {
+        PULL_ONUS,
+        PULL_OFFUS,
+        PUSH_ONUS,
+        PUSH_OFFUS,
+        CASH,
+        CHARGES,
+        INTEREST,
+        REVERSAL,
+        OTHER;
+    }
+    public static enum TxnChannel {
+        SMS,
+        ATM,
+        MICROATM,
+        POS,
+        XMPP,
+        HTTP,
+        ADMIN;
+    }
+    private WireSecurity wireSecuirty = WireSecurity.NONE;
+    private MsgSecurity msgSecurity = MsgSecurity.NONE;
+    private TxnType txnType = TxnType.PULL_ONUS;
+    private TxnChannel txnChannel = TxnChannel.ADMIN;
+    
+    public void setInitiaorIP(String initiaorIP) {
+        this.initiaorIP = initiaorIP;
     }
 
-    public void setTxnStore(String txnStore) {
-        this.txnStore = txnStore;
+    public String getInitiaorIP() {
+        return initiaorIP;
     }
 
-    public String getBalanceStore() {
-        return balanceStore;
+    public void setInitiatorDeviceType(String initiatorDeviceType) {
+        this.initiatorDeviceType = initiatorDeviceType;
     }
 
-    public void setBalanceStore(String balanceStore) {
-        this.balanceStore = balanceStore;
+    public String getInitiatorDeviceType() {
+        return initiatorDeviceType;
     }
 
-    public boolean isCreateAccountOnTxn() {
-        return createAccountOnTxn;
+    public MsgSecurity getMsgSecurity() {
+        return msgSecurity;
     }
 
-    public void setCreateAccountOnTxn(boolean createAccountOnTxn) {
-        this.createAccountOnTxn = createAccountOnTxn;
+    public void setMsgSecurity(MsgSecurity msgSecurity) {
+        this.msgSecurity = msgSecurity;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public TxnChannel getTxnChannel() {
+        return txnChannel;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setTxnChannel(TxnChannel txnChannel) {
+        this.txnChannel = txnChannel;
     }
 
-    public String getHelperHosts() {
-        return helperHosts;
+    public TxnType getTxnType() {
+        return txnType;
     }
 
-    public void setHelperHosts(String helperHosts) {
-        this.helperHosts = helperHosts;
+    public void setTxnType(TxnType txnType) {
+        this.txnType = txnType;
     }
 
-    public String getNodeHostPort() {
-        return nodeHostPort;
+    public WireSecurity getWireSecuirty() {
+        return wireSecuirty;
     }
 
-    public void setNodeHostPort(String nodeHostPort) {
-        this.nodeHostPort = nodeHostPort;
+    public void setWireSecuirty(WireSecurity wireSecuirty) {
+        this.wireSecuirty = wireSecuirty;
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
-    }
-
-    public String getEnvHome() {
-        return envHome;
-    }
-
-    public void setEnvHome(String envHome) {
-        this.envHome = envHome;
+    public TxnHdr() {
+        super();
     }
 
 }

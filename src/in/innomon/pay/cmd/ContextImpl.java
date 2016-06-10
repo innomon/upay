@@ -19,26 +19,53 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.cmd;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public class ContextImpl implements Context {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    protected ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
+    protected Context parent = null;
+    protected Logger log = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+    public ContextImpl() {
     }
-    
+
+    public ContextImpl(Context parent) {
+        this.parent = parent;
+    }
+
+    public void setKeyValue(ContextKeyValue kval) {
+        map.put(kval.getKey(), kval.getValue());
+    }
+
+    @Override
+    public void put(String key, Object val) {
+        map.put(key, val);
+    }
+
+    @Override
+    public Object get(String key) {
+        Object ret = map.get(key);
+        if (ret == null && parent != null) {
+            ret = parent.get(key);
+        }
+        return ret;
+    }
+
+    public void setLogger(Logger log) {
+        this.log = log;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return log;
+    }
 }

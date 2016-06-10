@@ -19,26 +19,26 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.xmpp;
+
+import in.innomon.pay.cmd.CommandHelper;
+import in.innomon.pay.cmd.Commander;
+import org.jivesoftware.smack.packet.Message;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public interface XmppBotHelper extends CommandHelper, XmppConstants {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
+    public void requestTermination();
+
+    public boolean isTerminationRequested();
+    public long getSnoozeTimeMillis();
+    public Commander getCommander();
+    public boolean isDebug();
     
+    // Non blocking method. PacketWriter inside XMPPConnection puts it in a queue 
+    public void sendMessage(Message msg);
 }

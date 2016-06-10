@@ -19,26 +19,46 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.txn;
 
-/**
- *
- * @author ashish
- */
-public class Upay {
+public class TxnException extends IllegalArgumentException {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+
+    public static enum Error {
+       ERR_UNDEFINED, ERR_UNSUPPORTED_TXN_TYPE, ERR_ACCOUNT_BLOCKED, ERR_EXPIRED_OTP, ERR_LOW_OTP_AMOUNT, ERR_LOW_BALANCE, ERR_WRONG_OTP, ERR_INVALID_PIN,
+       ERR_ADD_TO_ACCOUNT_NOT_FOUND, ERR_DEDUCT_FROM_ACCOUNT_NOT_FOUND, ERR_ACCOUNT_EXISTS, ERR_ACCOUNT_DOES_NOT_EXISTS, ERR_ACCOUNT_INFO_DOES_NOT_EXISTS, ERR_ACCOUNT_INFO_EXIST                                                                                        
     }
+    private Error error = Error.ERR_UNDEFINED;
     
+    public TxnException(Throwable throwable) {
+        super(throwable);
+    }
+
+    public TxnException(String string, Throwable throwable) {
+        super(string, throwable);
+    }
+
+    public TxnException(String string) {
+        super(string);
+    }
+    public TxnException(String string, Error err) {
+      super(string);
+      error = err;
+    }
+  public TxnException(Error err) {
+    super(err.toString());
+    error = err;
+  }
+
+    public TxnException() {
+        super();
+    }
+  public void setError(TxnException.Error error) {
+      this.error = error;
+  }
+
+  public TxnException.Error getError() {
+      return error;
+  }
 }

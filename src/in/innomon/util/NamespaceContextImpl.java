@@ -19,26 +19,42 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.util;
+
+import java.util.Iterator;
+import java.util.Properties;
+import javax.xml.namespace.NamespaceContext;
 
 /**
  *
  * @author ashish
+ *  
  */
-public class Upay {
+public class NamespaceContextImpl implements NamespaceContext {
+    private String defaPfix;
+    private String defaNS;
+    private Properties prop;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    public NamespaceContextImpl(String defaPfix, String defaNS, Properties prop) {
+        this.defaPfix =  defaPfix;
+        this.defaNS = defaNS;
+        this.prop = prop;
     }
+    @Override
+    public String getNamespaceURI(String prefix) {
+        return prop.getProperty(prefix, defaNS);
+    }
+
+    @Override
+    public String getPrefix(String namespaceURI) {
+        return prop.getProperty(namespaceURI, defaPfix);
+    }
+
+    @Override
+    public Iterator getPrefixes(String namespaceURI) {
+        return (Iterator) prop.keySet();
+    }
+
     
 }

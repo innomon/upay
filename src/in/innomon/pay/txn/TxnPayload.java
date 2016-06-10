@@ -19,26 +19,68 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.txn;
 
-/**
- *
- * @author ashish
- */
-public class Upay {
+import com.sleepycat.persist.model.Entity;
+import com.sleepycat.persist.model.PrimaryKey;
+import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
+@XmlRootElement
+@Entity
+public class TxnPayload implements Serializable {
+    @PrimaryKey
+    private String txnID;
+    private TxnHdr hdr;
+    private TxnReq req;
+    private TxnRes res;
     
+    public TxnPayload() {
+        super();
+        hdr = new TxnHdr();
+        req = new TxnReq();
+        res = new TxnRes();
+        txnID = java.util.UUID.randomUUID().toString();
+    }
+     public TxnPayload(TxnReq req) {
+        super();
+        hdr = new TxnHdr();
+        req = req;
+        res = new TxnRes();
+        txnID = java.util.UUID.randomUUID().toString();
+    }
+
+    public String getTxnID() {
+        return txnID;
+    }
+
+    public void setTxnID(String txnID) {
+        this.txnID = txnID;
+    }
+
+    
+    public void setHdr(TxnHdr hdr) {
+        this.hdr = hdr;
+    }
+
+    public TxnHdr getHdr() {
+        return hdr;
+    }
+
+    public void setReq(TxnReq req) {
+        this.req = req;
+    }
+
+    public TxnReq getReq() {
+        return req;
+    }
+
+    public void setRes(TxnRes res) {
+        this.res = res;
+    }
+
+    public TxnRes getRes() {
+        return res;
+    }
 }

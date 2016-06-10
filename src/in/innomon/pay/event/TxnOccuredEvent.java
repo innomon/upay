@@ -19,26 +19,70 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.event;
+
+import in.innomon.event.Event;
+import in.innomon.pay.txn.TxnPayload;
+import in.innomon.util.NamespaceContextImpl;
+import java.io.ByteArrayOutputStream;
+import java.util.Properties;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public class TxnOccuredEvent implements Event {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    public static final String NS = "http://www.innomon.in/upay/v01";
+    private TxnPayload txn;
+
+    public TxnOccuredEvent(TxnPayload txn) {
+        this.txn = txn;
     }
-    
+
+    @Override
+    public Object getEventObject() {
+        return txn;
+    }
+
+    @Override
+    public String toString() {
+        return toXmlString();
+    }
+
+    private String toXmlString() {
+        String ret;
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            XMLOutputFactory fact = XMLOutputFactory.newFactory();
+            fact.setProperty("javax.xml.stream.isRepairingNamespaces", Boolean.TRUE);
+            XMLStreamWriter xwrt = fact.createXMLStreamWriter(bos);
+            NamespaceContextImpl nsctx = new NamespaceContextImpl("upay", NS, new Properties());
+
+            xwrt.setDefaultNamespace(NS);
+            xwrt.setPrefix("upay", NS);
+            xwrt.writeStartDocument();
+            xwrt.writeStartElement("upay", "Txn", NS);
+
+            JAXBContext context = JAXBContext.newInstance(TxnPayload.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            m.setProperty("jaxb.fragment", Boolean.TRUE);
+
+            xwrt.setNamespaceContext(nsctx);
+            m.marshal(txn, xwrt);
+            xwrt.writeEndDocument();
+
+            ret = bos.toString();
+            
+        } catch (Exception ex) {
+            ret = ex.toString();
+        }
+        return ret;
+    }
 }

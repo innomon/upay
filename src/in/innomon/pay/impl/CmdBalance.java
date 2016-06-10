@@ -19,26 +19,41 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.impl;
+
+import in.innomon.pay.cmd.Context;
+import in.innomon.pay.txn.TxnException;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+public class CmdBalance extends CmdAdminBase {
+    public CmdBalance() {
+        cmdName = "BAL";
+        help = "BAL: displays Balance in your account";        
     }
-    
+
+    @Override
+    public String exec(String cmdLine, Context cmdCtx) {
+        String ret = "Not Found";
+    AdminCmdHelper helper = getAdminHelper();
+        String msgSender =  getSenderId(cmdCtx);
+        if(msgSender == null)
+            return "ERROR: Internal Error Message Sender Not set in context XmppConstants.CTX_XMPP_MSG_SENDER";
+ 
+        if(helper == null)
+            return "ERROR: Internal Error, missing AdminCmdHelper implemenation"; 
+        
+        try {
+            String actName = helper.getAccountName(msgSender);
+            double baln = helper.getAccountBalance(actName);
+            ret = "Balance = "+baln+"\nAccount Name= ["+actName+"]\n";
+        } catch (TxnException ex) {
+            cmdCtx.getLogger().severe(ex.toString());
+            ret = ex.getError().name(); 
+        }
+        return ret;
+    }
 }

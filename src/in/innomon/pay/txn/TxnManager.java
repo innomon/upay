@@ -19,26 +19,20 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.txn;
 
-/**
- *
- * @author ashish
- */
-public class Upay {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
+public interface TxnManager {
     
+    public void beginTxn();
+    public void commit();
+    public void rollback();
+    public void close();
+    public Balance getBalance(String key) throws TxnException;
+    public Balance createBalance(String accountName) throws TxnException;
+    public void updateBalance(Balance account) throws TxnException;
+    public void recordTxn(TxnPayload payload) throws TxnException;
+    public boolean isFloaterAccount(String account);
+    public String getFloaterAccountName();
+   
 }

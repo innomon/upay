@@ -19,26 +19,36 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.cmd;
+
+import in.innomon.pay.xmpp.XmppConstants;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public abstract class CmdBase implements Command {
+    protected String cmdName = "UNDEFINED";
+    protected String help = "Not Set";
+    
+    public void setHelp(String help) {
+        this.help = help;
+    }
+    public void setCmdName(String cmd) {
+        cmdName = cmd;
+    }
+    @Override
+    public String getCmdKey() {
+        return cmdName;
+    }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    @Override
+    public String getCmdHelp() {
+        return help;
     }
     
+    public String getSenderId(Context ctx) {
+        return (String) ctx.get(XmppConstants.CTX_XMPP_MSG_SENDER);
+    }
 }

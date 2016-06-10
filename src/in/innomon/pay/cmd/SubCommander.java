@@ -19,26 +19,47 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+
+package in.innomon.pay.cmd;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public class SubCommander implements Command {
+    private Commander subCommands = new Commander();
+    private String cmdName = "ADMIN";
+    @Override
+    public String getCmdKey() {
+        return cmdName;
+    }
+    public void setCmdName(String name) {
+        cmdName = name;
+    }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    @Override
+    public String getCmdHelp() {
+        //return "Type "+cmdName+" HELP for sub commands... \n refer to http://telecom.ashishbanerjee.com";
+        StringBuilder buf = new StringBuilder();
+        buf.append("Sub Commands for ["+cmdName+"] \n");
+        buf.append(subCommands.exec(cmdName,null));
+        return buf.toString();
+    }
+
+    @Override
+    public String exec(String cmdLine, Context context) {
+        cmdLine = cmdLine.trim();
+        System.err.println("Admin: ["+cmdLine.trim()+"]");
+        if(cmdLine.length() < 7)
+            return getCmdHelp();
+        cmdLine = cmdLine.substring(5); // ADMIN == 5 chars, so skip 5 chars
+        System.err.println("Admin: ["+cmdLine.trim()+"]");
+        return subCommands.executeCommand(cmdLine.trim(), context);
     }
     
+    public void setSubCommand(Command cmd) {
+        subCommands.setCommand(cmd);
+    }
+
 }

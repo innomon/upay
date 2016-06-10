@@ -19,26 +19,63 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.txn;
+
+import java.io.Serializable;
+import com.sleepycat.persist.model.Entity;
+import com.sleepycat.persist.model.PrimaryKey;
+import com.sleepycat.persist.model.SecondaryKey;
+import javax.xml.bind.annotation.*;
+
+import static com.sleepycat.persist.model.Relationship.*;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+@XmlRootElement()
+@Entity
+public class AccountInfo implements Serializable {
+    @PrimaryKey 
+    private String email="Undefined";
+    @SecondaryKey(relate=ONE_TO_ONE)
+    private String accountName = "Undefined";
+    
+    private String PersonName = "KYC Not done";
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    public String getAccountType() {
+        return accountType;
     }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+    private String accountType = "IMPS_STD";
+    
+    public String getPersonName() {
+        return PersonName;
+    }
+
+    public void setPersonName(String PersonName) {
+        this.PersonName = PersonName;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
     
 }

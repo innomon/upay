@@ -19,26 +19,62 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.txn;
 
-/**
- *
- * @author ashish
- */
-public class Upay {
+import com.sleepycat.persist.model.Persistent;
+import java.io.Serializable;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
+@Persistent
+public class TxnReq implements Serializable{
+    private String addToAccount;
+    private double txnAmount;
+    private String deductFromAccount;
+    private long otp;
+    private String txnRefID;
     
+    
+    public TxnReq() {
+        super();
+    }
+
+    public void setAddToAccount(String addToAccount) {
+        this.addToAccount = addToAccount;
+    }
+
+    public String getAddToAccount() {
+        return addToAccount;
+    }
+
+    public void setTxnAmount(double txnAmount) {
+        this.txnAmount = txnAmount;
+    }
+
+    public double getTxnAmount() {
+        return txnAmount;
+    }
+
+    public void setDeductFromAccount(String deductFromAccount) {
+        this.deductFromAccount = deductFromAccount;
+    }
+
+    public String getDeductFromAccount() {
+        return deductFromAccount;
+    }
+
+    public void setOtp(long otp) {
+        this.otp = otp;
+    }
+
+    public long getOtp() {
+        return otp;
+    }
+
+    public void setTxnRefID(String txnRefID) {
+        this.txnRefID = txnRefID;
+    }
+
+    public String getTxnRefID() {
+        return txnRefID;
+    }
 }

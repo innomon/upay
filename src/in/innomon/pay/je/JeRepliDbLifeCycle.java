@@ -19,26 +19,36 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.je;
+
+import com.sleepycat.je.EnvironmentConfig;
+import com.sleepycat.je.rep.ReplicatedEnvironment;
+import com.sleepycat.je.rep.ReplicationConfig;
+import java.io.File;
 
 /**
- *
+ * Replication Enabled, 22-May-11
  * @author ashish
  */
-public class Upay {
+public class JeRepliDbLifeCycle extends JeDbLifeCycle {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    @Override
+    public void start() {
+        if (env == null) {
+            // Set up the environment.
+            EnvironmentConfig envConfig = new EnvironmentConfig();
+            envConfig.setAllowCreate(true);
+            envConfig.setTransactional(true);
+            
+            ReplicationConfig repliConfig = new ReplicationConfig();
+            repliConfig.setGroupName(envInfo.getGroupName());
+            repliConfig.setNodeName(envInfo.getNodeName());
+            repliConfig.setNodeHostPort(envInfo.getNodeHostPort());
+
+            env = new ReplicatedEnvironment(new File(envInfo.getEnvHome()), // Env home
+                    repliConfig, envConfig);
+
+        }
     }
-    
 }

@@ -19,26 +19,57 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.je;
+
+import com.sleepycat.je.Environment;
+import com.sleepycat.persist.EntityStore;
+import com.sleepycat.persist.PrimaryIndex;
+import com.sleepycat.persist.SecondaryIndex;
+import com.sleepycat.persist.StoreConfig;
+import in.innomon.pay.txn.AccountInfo;
+import in.innomon.pay.txn.AccountInfoManager;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public class JeAccountInfoManager implements AccountInfoManager {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    private EntityStore balStore = null;
+    private StoreConfig entStoreConfig = null;
+    private PrimaryIndex<String, AccountInfo> pkInfo = null;
+    private SecondaryIndex<String, String, AccountInfo> skInfo = null;
+
+    public JeAccountInfoManager(Environment env, String balanceStoreName) {
+        entStoreConfig = new StoreConfig();
+        entStoreConfig.setAllowCreate(true);
+        entStoreConfig.setTransactional(true);
+        balStore = new EntityStore(env, balanceStoreName, entStoreConfig);
+        pkInfo = balStore.getPrimaryIndex(String.class, AccountInfo.class);
+        skInfo = balStore.getSecondaryIndex(pkInfo, String.class, "accountName");
     }
-    
+
+    @Override
+    public void updateAccountInfo(AccountInfo act) {
+        pkInfo.put(act);
+    }
+
+    @Override
+    public void close() {
+        if (balStore != null) {
+            balStore.close();
+        }
+        balStore = null;
+    }
+
+    @Override
+    public AccountInfo getAccountInfoForAccountName(String mobile) {
+        return skInfo.get(mobile);
+    }
+
+    @Override
+    public AccountInfo getAccountInfoForEmail(String mail) {
+        return pkInfo.get(mail);
+    }
 }

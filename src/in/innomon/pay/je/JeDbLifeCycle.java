@@ -19,26 +19,57 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.je;
+
+import com.sleepycat.je.Environment;
+import com.sleepycat.je.EnvironmentConfig;
+import in.innomon.util.LifeCycle;
+import java.io.File;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public abstract class JeDbLifeCycle implements LifeCycle {
+    protected Environment env = null;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    public JeDbLifeCycle() {
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        stop();
+        super.finalize();
+       
+    }
+    protected EnvInfo envInfo = new EnvInfo();
+
+    public void setEnvInfo(EnvInfo env) {
+        this.envInfo = env;
+    }
+
+    @Override
+    public void start() {
+        if (env == null) {
+            // Set up the environment.
+            EnvironmentConfig envConfig = new EnvironmentConfig();
+            envConfig.setAllowCreate(true);
+            envConfig.setTransactional(true);
+            //  Environment handles are free-threaded by default in JE,
+            // so we do not have to do anything to cause the
+            // environment handle to be free-threaded.
+            // Open the environment
+            env = new Environment(new File(envInfo.getEnvHome()), envConfig);
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (env != null) {
+            env.close();
+            env = null;
+        }
     }
     
 }

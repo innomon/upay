@@ -19,26 +19,30 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.je;
+
+import in.innomon.pay.txn.TxnFactory;
+import in.innomon.pay.txn.AccountInfoManager;
+import in.innomon.pay.txn.TxnManager;
+
+
 
 /**
  *
  * @author ashish
  */
-public class Upay {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+public class JeTxnFactory extends JeDbLifeCycle implements TxnFactory {
+    
+    
+    @Override
+    public AccountInfoManager createAccountInfoManager() {
+        return new JeAccountInfoManager(env, envInfo.getBalanceStore());
     }
+    @Override
+    public TxnManager createTxnManager() {
+        return new JeTxnManager(env, envInfo.getBalanceStore(),  envInfo.getTxnStore());
+    }
+ 
     
 }

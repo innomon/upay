@@ -19,26 +19,17 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.xmpp;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
-    
+public interface XmppConstants {
+    public static final String CTX_XMPP_CONNECTION = "CTX_XMPP_CONNECTION";
+    public static final String CTX_XMPP_MSG_IN_Q = "CTX_XMPP_MSG_IN_Q";
+    public static final String CTX_XMPP_MSG_OUT_Q = "CTX_XMPP_MSG_OUT_Q";
+    public static final String CTX_XMPP_MSG_SENDER = "CTX_XMPP_MSG_SENDER";
+    public static final String CTX_XMPP_MSG_NOTIFIER = "CTX_XMPP_MSG_NOTIFIER";
 }

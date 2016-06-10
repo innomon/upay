@@ -19,26 +19,24 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.impl;
+
+import in.innomon.pay.cmd.CmdBase;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public abstract class CmdAdminBase extends CmdBase {
+    private AdminCmdHelper adminHelper = null;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
+    public AdminCmdHelper getAdminHelper() {
+        return adminHelper;
+    }
+
+    public void setAdminHelper(AdminCmdHelper adminHelper) {
+        this.adminHelper = adminHelper;
     }
     
 }

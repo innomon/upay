@@ -19,26 +19,19 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.cmd;
+
+import java.util.logging.Logger;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
+public interface Context {
+    public static final String CTX_NAME_MSG_HDR = "CTX_NAME_MSG_HDR"; // message header is set by command processors optionally
+    Object get(String key);
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
-    
+    void put(String key, Object val);
+    public Logger  getLogger();
 }

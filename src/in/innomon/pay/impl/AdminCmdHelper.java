@@ -19,26 +19,32 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.impl;
+
+import in.innomon.pay.txn.TxnException;
 
 /**
  *
  * @author ashish
  */
-public class Upay {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
+public interface AdminCmdHelper {
+    public boolean isAdmin(String emailId);
+    // Admin REG creates a new mobile and KYC pin
+    public void register(String mobile, int kycPin) throws TxnException;
+    // User receives KYC PIN by SMS and regesters using REGISTER command
+    public void userRegistration(String email, String nickName, String mobile, int kycPin) throws TxnException;
+    
+    public String getAccountName(String email) throws TxnException;
+    public String getAccountEmail(String accountName) throws TxnException;
+    
+    public double getAccountBalance(String accountName) throws TxnException; 
+    public long   genOtp(String email, double maxAmount) throws TxnException; 
+    // Admin can load Money
+    public String loadMoney(String accountName, double amount) throws TxnException; 
+    public String unloadMoney(String accountName, double amount) throws TxnException; 
+    public String pullMoney(String fromAccountName, String toAccountName, double amount, long otp) throws TxnException;
+    
+    public String getPrimaryMMID(String mobile);
     
 }

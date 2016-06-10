@@ -19,26 +19,88 @@
 * 
 * Author: Ashish Banerjee, tech@innomon.in
 */
-package upay;
 
-import java.io.IOException;
-import java.io.InputStream;
-import twister.system.BDLParser;
+package in.innomon.pay.je;
 
 /**
  *
  * @author ashish
+ * 22-May-11: Added BDB JE Replication extensions 
  */
-public class Upay {
+public class EnvInfo {
+    private String envHome = "/home/ashish/abpay";
+    private String balanceStore = "CashBalance";
+    private String txnStore = "TxnStore";
+    private boolean createAccountOnTxn = false;  // create a new UUID if not present
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-   // Run Inversion of Control script (Bean Deployment Language )
-        BDLParser cmds = new BDLParser();
-        InputStream bdl = cmds.getClass().getClassLoader().getResourceAsStream("upay.bdl");
-        cmds.exec(bdl);
-    }
+    // replication support
+    private String groupName = "upayReplicationGroup";
+    private String nodeName  = "Master";
+    private String nodeHostPort = "localhost:4101";
+    private String helperHosts = "localhost:4101";
     
+    public String getTxnStore() {
+        return txnStore;
+    }
+
+    public void setTxnStore(String txnStore) {
+        this.txnStore = txnStore;
+    }
+
+    public String getBalanceStore() {
+        return balanceStore;
+    }
+
+    public void setBalanceStore(String balanceStore) {
+        this.balanceStore = balanceStore;
+    }
+
+    public boolean isCreateAccountOnTxn() {
+        return createAccountOnTxn;
+    }
+
+    public void setCreateAccountOnTxn(boolean createAccountOnTxn) {
+        this.createAccountOnTxn = createAccountOnTxn;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getHelperHosts() {
+        return helperHosts;
+    }
+
+    public void setHelperHosts(String helperHosts) {
+        this.helperHosts = helperHosts;
+    }
+
+    public String getNodeHostPort() {
+        return nodeHostPort;
+    }
+
+    public void setNodeHostPort(String nodeHostPort) {
+        this.nodeHostPort = nodeHostPort;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public String getEnvHome() {
+        return envHome;
+    }
+
+    public void setEnvHome(String envHome) {
+        this.envHome = envHome;
+    }
+
 }
