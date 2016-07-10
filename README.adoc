@@ -1,5 +1,7 @@
 = UPay: UPI API Wallet Technology Demonstrator
 
+*NOTE:* Obsoleted by https://github.com/qzip/atm[Qzip ATM project]
+
 UPay intends to demonstrate an implementation of http://www.npci.org.in/UPI_Documents.aspx[UPI]
 
 The canonical UPI API, specified by NPCI, uses XML over HTTPS. The API calls are asynchronous. The Request, Response are paired through a common transaction ID set by the originating point.
